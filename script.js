@@ -18,11 +18,35 @@ function createGameboard() {
   return { updateGameArea, getGameArea };
 }
 
+// create player factory function
+function createPlayer(name, symbol) {
+    const getName = () => name;
+    const getSymbol = () => symbol;
+  return { getName, getSymbol };
+}
 
+// create game flow factory function
+function createGameFlow() {
+  const players = [createPlayer("Player 1", "X"), createPlayer("Player 2", "O")];
+  const gameBoard = createGameboard();
+  
+  function startGame() {
+    const currentPlayer = players[0];
+    let game = true;
+    while(game) {
+        console.log(gameBoard.getGameArea());
+        let col = prompt('choose a column');
+        let row = prompt("choose a row");
 
+        gameBoard.updateGameArea(row, col, currentPlayer.getSymbol());
+        
+        
+    }
 
+  }
 
+  return { startGame }
+}
+const game = createGameFlow();
 
-const gameBoard = createGameboard();
-
-console.log(gameBoard.getGameArea());
+console.log(game.startGame());
