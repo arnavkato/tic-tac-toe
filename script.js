@@ -1,4 +1,3 @@
-
 // create gameboard factory function
 function createGameboard() {
   const gameArea = document.createElement("div");
@@ -39,23 +38,53 @@ function createGameboard() {
     return gameArea;
   };
 
-  return { updateGameArea, getGameArea };
+  const getGrid = () => {
+    return grid;
+  };
+
+  const setupEventListeners = (game) => {
+    for (let row = 0; row < 3; row++) {
+      for (let col = 0; col < 3; col++) {
+        grid[row][col].addEventListener("click", () => {
+          const currentPlayer = game.getCurrentPlayer();
+          grid[row][col].textContent = currentPlayer.getSymbol();
+        });
+      }
+    }
+  };
+
+  return { updateGameArea, getGameArea, getGrid, setupEventListeners };
 }
-
-
-
 
 // create player factory function
 function createPlayer(name, symbol) {
-    const getName = () => name;
-    const getSymbol = () => symbol;
+  const getName = () => name;
+  const getSymbol = () => symbol;
   return { getName, getSymbol };
 }
 
 // create game flow factory function
 function createGameFlow() {
-  const players = [createPlayer("Player 1", "X"), createPlayer("Player 2", "O")];
+  const players = [
+    createPlayer("Player 1", "X"),
+    createPlayer("Player 2", "O"),
+  ];
   const gameBoard = createGameboard();
+
+  let currentPlayer = players[0];
+  let game = true;
+
+  const getCurrentPlayer = () => {
+    return currentPlayer;
+  };
+
+  // Create game instance object
+  const gameInstance = {
+    getCurrentPlayer,
+  };
+
+  // Set up event listeners after game is initialized
+  gameBoard.setupEventListeners(gameInstance);
 
   function checkWinner(board) {
     // Check rows
@@ -112,44 +141,24 @@ function createGameFlow() {
 
     return null;
   }
-  
-  function startGame() {
-    let currentPlayer = players[0];
-    let game = true;
-    while(game) {
-        console.log(gameBoard.getGameArea());
-        let col = prompt('choose a column');
-        let row = prompt("choose a row");
 
-        gameBoard.updateGameArea(row, col, currentPlayer.getSymbol());
+  while (game) {
+    gameBoard.updateGameArea(row, col, currentPlayer.getSymbol());
 
-        if(checkWinner(gameBoard.getGameArea()) == 'X') {
-            return console.log("player 1 wins");
-        }
-            
-        else if (checkWinner(gameBoard.getGameArea()) == 'O') {
-            return console.log("player 2 wins");
-        }
-
-        if (currentPlayer == players[0]) {
-            currentPlayer = players[1];
-        }
-        else {
-            currentPlayer = players[0];
-        }
-        
-        
+    if (checkWinner(gameBoard.getGrid()) == "X") {
+      return console.log("player 1 wins");
+    } else if (checkWinner(gameBoard.getGameArea()) == "O") {
+      return console.log("player 2 wins");
     }
 
+    if (currentPlayer == players[0]) {
+      currentPlayer = players[1];
+    } else {
+      currentPlayer = players[0];
+    }
   }
 
-  return { startGame }
+  return { getCurrentPlayer };
 }
 
-
 const game = createGameFlow();
-
-console.log(game.startGame());
-
-
-
