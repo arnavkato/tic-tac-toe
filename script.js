@@ -47,7 +47,12 @@ function createGameboard() {
       for (let col = 0; col < 3; col++) {
         grid[row][col].addEventListener("click", () => {
           const currentPlayer = game.getCurrentPlayer();
-          grid[row][col].textContent = currentPlayer.getSymbol();
+          if (!grid[row][col].textContent) {
+            grid[row][col].textContent = currentPlayer.getSymbol();
+          } else {
+            return;
+          }
+            
 
           if (game.checkWinner(grid) == "X") {
             return console.log("player 1 wins");
@@ -155,22 +160,6 @@ function createGameFlow() {
       return null;
     }
 
-  /*while (game) {
-    gameBoard.updateGameArea(row, col, currentPlayer.getSymbol());
-
-    if (checkWinner(gameBoard.getGrid()) == "X") {
-      return console.log("player 1 wins");
-    } else if (checkWinner(gameBoard.getGameArea()) == "O") {
-      return console.log("player 2 wins");
-    }
-
-    if (currentPlayer == players[0]) {
-      currentPlayer = players[1];
-    } else {
-      currentPlayer = players[0];
-    }
-  }*/
-
   const gameInstance = {
     getCurrentPlayer,
     checkWinner,
@@ -182,5 +171,12 @@ function createGameFlow() {
 
   return { getCurrentPlayer, checkWinner, changeCurrentPlayer };
 }
+
+
+function displayButtons() {
+
+}
+
+
 
 const game = createGameFlow();
