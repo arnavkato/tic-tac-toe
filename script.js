@@ -48,6 +48,16 @@ function createGameboard() {
         grid[row][col].addEventListener("click", () => {
           const currentPlayer = game.getCurrentPlayer();
           grid[row][col].textContent = currentPlayer.getSymbol();
+
+          if (game.checkWinner(grid) == "X") {
+            return console.log("player 1 wins");
+          } else if (game.checkWinner(grid) == "O") {
+            return console.log("player 2 wins");
+          } else if (game.checkWinner(grid) == "draw") {
+            return console.log("draw");
+          }
+
+          game.changeCurrentPlayer();
         });
       }
     }
@@ -72,77 +82,80 @@ function createGameFlow() {
   const gameBoard = createGameboard();
 
   let currentPlayer = players[0];
-  let game = true;
+
 
   const getCurrentPlayer = () => {
     return currentPlayer;
   };
 
-  // Create game instance object
-  const gameInstance = {
-    getCurrentPlayer,
-  };
-
-  // Set up event listeners after game is initialized
-  gameBoard.setupEventListeners(gameInstance);
-
-  function checkWinner(board) {
-    // Check rows
-    for (let i = 0; i < 3; i++) {
-      if (
-        board[i][0] &&
-        board[i][0] === board[i][1] &&
-        board[i][1] === board[i][2]
-      ) {
-        return board[i][0];
-      }
+  const changeCurrentPlayer = () => {
+    if (currentPlayer == players[0]) {
+      currentPlayer = players[1];
+    } else {
+      currentPlayer = players[0];
     }
-
-    // Check columns
-    for (let i = 0; i < 3; i++) {
-      if (
-        board[0][i] &&
-        board[0][i] === board[1][i] &&
-        board[1][i] === board[2][i]
-      ) {
-        return board[0][i];
-      }
-    }
-
-    // Check diagonals
-    if (
-      board[0][0] &&
-      board[0][0] === board[1][1] &&
-      board[1][1] === board[2][2]
-    ) {
-      return board[0][0];
-    }
-    if (
-      board[0][2] &&
-      board[0][2] === board[1][1] &&
-      board[1][1] === board[2][0]
-    ) {
-      return board[0][2];
-    }
-
-    // Check for draw
-    let isDraw = true;
-    for (let i = 0; i < 3; i++) {
-      for (let j = 0; j < 3; j++) {
-        if (board[i][j] === null) {
-          isDraw = false;
-          break;
-        }
-      }
-    }
-    if (isDraw) {
-      return "draw";
-    }
-
-    return null;
   }
 
-  while (game) {
+  // Create game instance object
+  
+
+    const checkWinner = (board) => {
+      // Check rows
+      for (let i = 0; i < 3; i++) {
+        if (
+          board[i][0].textContent &&
+          board[i][0].textContent === board[i][1].textContent &&
+          board[i][1].textContent === board[i][2].textContent
+        ) {
+          return board[i][0].textContent;
+        }
+      }
+
+      // Check columns
+      for (let i = 0; i < 3; i++) {
+        if (
+          board[0][i].textContent &&
+          board[0][i].textContent === board[1][i].textContent &&
+          board[1][i].textContent === board[2][i].textContent
+        ) {
+          return board[0][i].textContent;
+        }
+      }
+
+      // Check diagonals
+      if (
+        board[0][0].textContent &&
+        board[0][0].textContent === board[1][1].textContent &&
+        board[1][1].textContent === board[2][2].textContent
+      ) {
+        return board[0][0].textContent;
+      }
+      if (
+        board[0][2].textContent &&
+        board[0][2].textContent === board[1][1].textContent &&
+        board[1][1].textContent === board[2][0].textContent
+      ) {
+        return board[0][2].textContent;
+      }
+
+      // Check for draw
+      let isDraw = true;
+      for (let i = 0; i < 3; i++) {
+        for (let j = 0; j < 3; j++) {
+          if (!board[i][j].textContent) {
+            isDraw = false;
+            break;
+          }
+        }
+      }
+      if (isDraw) {
+        return "draw";
+      }
+
+      return null;
+    }
+
+  /*while (game) {
     gameBoard.updateGameArea(row, col, currentPlayer.getSymbol());
 
     if (checkWinner(gameBoard.getGrid()) == "X") {
@@ -156,9 +169,18 @@ function createGameFlow() {
     } else {
       currentPlayer = players[0];
     }
-  }
+  }*/
 
-  return { getCurrentPlayer };
+  const gameInstance = {
+    getCurrentPlayer,
+    checkWinner,
+    changeCurrentPlayer,
+  };
+
+  // Set up event listeners after game is initialized
+  gameBoard.setupEventListeners(gameInstance);
+
+  return { getCurrentPlayer, checkWinner, changeCurrentPlayer };
 }
 
 const game = createGameFlow();
